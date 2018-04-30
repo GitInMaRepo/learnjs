@@ -1,15 +1,5 @@
 
-## Change Log
-
-### Beta 3 Changes
-
-  * Compensating for AWSCLI timing issues when creating roles
-  
-### Beta 2 Changes
-
-  * Now using 'admin' profile instead of default profile
-  * Added create_service action to sspa
-  * deploy_bucket can now take a config path
+## Credit goes to @benrady
 
 ## MIT License
 
