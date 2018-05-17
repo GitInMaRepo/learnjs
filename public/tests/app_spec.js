@@ -45,6 +45,13 @@ describe('LearnJS', function () {
             learnjs.problemView('1');
             expect(learnjs.applyBindings).toHaveBeenCalled();
         });
+
+        it('calls the fadein/fadeout for user feedback', function() {
+            spyOn(learnjs, 'flashElement');
+            var view = learnjs.problemView('1');
+            view.find('.check-answer-button').click();
+            expect(learnjs.flashElement).toHaveBeenCalled();
+        });
     });
 
     describe('The databinding applicator', function() {
@@ -56,5 +63,22 @@ describe('LearnJS', function () {
             expect(result.find('[data-name="code"]').text())
                 .toEqual("function problem() { return ___; }");
         });
+    });
+
+    describe('The answer section', function(){
+        it('accepts a correct answer', function() {
+            var view = learnjs.problemView('1');
+            view.find('.answer').val('true');
+            view.find('.check-answer-button').click();
+            expect(view.find('.result').text()).toEqual('Correct!');
+        });
+
+        it('denies an incorrect answer', function() {
+            var view = learnjs.problemView('2');
+            view.find('.answer').val('10');
+            view.find('.check-answer-button').click();
+            expect(view.find('.result').text()).toEqual('Incorrect!');
+        });
+    
     });
 });
