@@ -4,7 +4,7 @@ describe('LearnJS', function () {
         expect($('.view-container .problems-view').length).toEqual(1);
     });
 
-    it('shows the landing page on an empty route/hash', function () {
+    it('shows the landing page', function () {
         learnjs.showView('');
         expect($('.view-container .landing-view').length).toEqual(1);
     });
@@ -36,6 +36,11 @@ describe('LearnJS', function () {
     it('correctly clones the result template', function() {
         var view = learnjs.cloneTemplate('correct-result');
         expect(view.hasClass('correct-result')).toEqual(true);
+    });
+
+    it('has a navigation area', function() {
+        learnjs.showView('#problem-1');
+        expect($('.nav-container').length).toEqual(1);
     });
 
     describe('The problem view', function() {
@@ -109,6 +114,18 @@ describe('LearnJS', function () {
             view.find('.check-answer-button').click();
             expect(view.find('a').text()).toEqual('You are finished');
             expect(view.find('a').attr('href')).toEqual('');
+        });
+    });
+
+    describe('The navigation area', function(){
+        it('has a home link', function(){
+            learnjs.showView('#problem-1');
+            expect($('.text-lg').attr('href')).toEqual('');
+        });
+
+        it('has a link to problem 1', function(){
+            learnjs.showView('#problem-1');
+            expect($('#start').text()).toEqual('Start');
         });
     });
 });

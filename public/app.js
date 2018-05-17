@@ -14,6 +14,10 @@ learnjs.problems = [
     }
 ]
 
+learnjs.landingView = function() {
+    return learnjs.cloneTemplate('landing-view')
+}
+
 learnjs.problemView = function(parameter) {
     var number = parseInt(parameter);
     var problem = learnjs.problems[number-1];
@@ -59,7 +63,8 @@ learnjs.problemView = function(parameter) {
 
 learnjs.showView = function(hash) {
     var routes = {
-        '#problem' : learnjs.problemView
+        '#problem' : learnjs.problemView,
+        '' : learnjs.landingView
     };
 
     var routeAndParams = hash.split('-');
