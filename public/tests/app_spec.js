@@ -21,11 +21,21 @@ describe('LearnJS', function () {
         expect(learnjs.showView).toHaveBeenCalledWith(window.location.hash);
     });
 
-    it('subscribes to the hashchange event', function(){
+    it('subscribes to the hashchange event', function() {
         learnjs.appOnReady();
         spyOn(learnjs, 'showView');
         $(window).trigger('hashchange');
         expect(learnjs.showView).toHaveBeenCalledWith(window.location.hash)
+    });
+
+    it('correctly clones the view template', function() {
+        var view = learnjs.cloneTemplate('problems-view');
+        expect(view.hasClass('problems-view')).toEqual(true);
+    });
+
+    it('correctly clones the result template', function() {
+        var view = learnjs.cloneTemplate('correct-result');
+        expect(view.hasClass('correct-result')).toEqual(true);
     });
 
     describe('The problem view', function() {
@@ -55,11 +65,16 @@ describe('LearnJS', function () {
     });
 
     describe('The databinding applicator', function() {
-        it('sets the data to the bound elements', function() {
+        it('sets the data to the description element', function() {
             var view = $('.templates .problems-view').clone();
             var result = learnjs.applyBindings(view, learnjs.problems[0]);
             expect(result.find('[data-name="description"]').text())
                 .toEqual("Make this evaluate truthy");
+        });
+
+        it('sets the data to the code element', function() {
+            var view = $('.templates .problems-view').clone();
+            var result = learnjs.applyBindings(view, learnjs.problems[0]);
             expect(result.find('[data-name="code"]').text())
                 .toEqual("function problem() { return ___; }");
         });
@@ -70,7 +85,15 @@ describe('LearnJS', function () {
             var view = learnjs.problemView('1');
             view.find('.answer').val('true');
             view.find('.check-answer-button').click();
-            expect(view.find('.result').text()).toEqual('Correct!');
+            expect(view.find('span').text()).toEqual('Correct! ');
+        });
+
+        it('shows the link to the next problem on a correct answer', function() {
+            var view = learnjs.problemView('1');
+            view.find('.answer').val('true');
+            view.find('.check-answer-button').click();
+            expect(view.find('a').text()).toEqual('Next problem');
+            expect(view.find('a').attr('href')).toEqual('#problem-2');
         });
 
         it('denies an incorrect answer', function() {
@@ -79,6 +102,13 @@ describe('LearnJS', function () {
             view.find('.check-answer-button').click();
             expect(view.find('.result').text()).toEqual('Incorrect!');
         });
-    
+
+        it('shows the link to the start page the last problem', function() {
+            var view = learnjs.problemView('2');
+            view.find('.answer').val('6');
+            view.find('.check-answer-button').click();
+            expect(view.find('a').text()).toEqual('You are finished');
+            expect(view.find('a').attr('href')).toEqual('');
+        });
     });
 });

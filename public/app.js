@@ -15,19 +15,36 @@ learnjs.problems = [
 ]
 
 learnjs.problemView = function(parameter) {
-    var problemNumber = parseInt(parameter);
-    var problemData = learnjs.problems[problemNumber-1];
-    var view = $('.templates .problems-view').clone();
+    var number = parseInt(parameter);
+    var problem = learnjs.problems[number-1];
+    var view = learnjs.cloneTemplate('problems-view');
     var resultArea = view.find('.result');
 
     function checkAnswer() {
         var answer = view.find('.answer').val();
-        var sourceCode = problemData.code.replace('___', answer) + '; problem();';
+        var sourceCode = problem
+                            .code
+                            .replace('___', answer) + '; problem();';
         return eval(sourceCode);
     }
+
+    function buildCorrectAnswer() {
+        var content = learnjs.cloneTemplate('correct-result');
+        var link = content.find('a');
+        if(number >= learnjs.problems.length) {
+            link.attr('href', '');
+            link.text('You are finished');            
+        }
+        else {
+            link.attr('href', '#problem-'+ (number+1));
+        }
+        return content;
+    }
+    
     function checkAnswerClick() {
         if(checkAnswer()) {
-            learnjs.flashElement(resultArea, 'Correct!');
+            var content = buildCorrectAnswer(number);
+            learnjs.flashElement(resultArea, content);
         }
         else {
             learnjs.flashElement(resultArea, 'Incorrect!');
@@ -35,9 +52,9 @@ learnjs.problemView = function(parameter) {
         return learnjs.DO_NOT_RELOAD_THE_PAGE;
     }
 
-    view.find('.title').text('Problem #' + parameter);
+    view.find('.title').text('Problem #' + number);
     view.find('.check-answer-button').click(checkAnswerClick);    
-    return learnjs.applyBindings(view, problemData);
+    return learnjs.applyBindings(view, problem);
 }
 
 learnjs.showView = function(hash) {
@@ -73,3 +90,8 @@ learnjs.flashElement = function(element, content) {
         element.fadeIn();
     });
 }
+
+learnjs.cloneTemplate = function(name) {
+    return $('.templates .'+name).clone();
+}
+
