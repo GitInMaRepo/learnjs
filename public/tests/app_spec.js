@@ -127,5 +127,15 @@ describe('LearnJS', function () {
             learnjs.showView('#problem-1');
             expect($('#start').text()).toEqual('Start');
         });
+
+        it('has a skip button on problem 1', function(){
+            learnjs.showView('#problem-1');
+            expect($('.nav-container .skip-button').length).toEqual(1);
+        });
+    
+        it('has no skip button on problem 2', function(){
+            learnjs.showView('#problem-2');
+            expect($('.nav-container .skip-button').length).toEqual(0);
+        });
     });
 });

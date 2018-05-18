@@ -56,8 +56,18 @@ learnjs.problemView = function(parameter) {
         return learnjs.DO_NOT_RELOAD_THE_PAGE;
     }
 
+
     view.find('.title').text('Problem #' + number);
-    view.find('.check-answer-button').click(checkAnswerClick);    
+    view.find('.check-answer-button').click(checkAnswerClick);
+
+    if(number < learnjs.problems.length) {
+        var button = learnjs.cloneTemplate('skip-button');
+        button.find('a').attr('href', '#problem-' + (number+1));
+        $('.nav-list').append(button);
+        view.bind('removingView', function() {
+            button.remove();
+        });
+    }
     return learnjs.applyBindings(view, problem);
 }
 
@@ -71,6 +81,7 @@ learnjs.showView = function(hash) {
 
     var funcToCall = routes[routeAndParams[0]];
     if(funcToCall) {
+        learnjs.triggerEvent('removingView', [])
         $('.view-container').empty().append(funcToCall(routeAndParams[1]));
     }
 }
@@ -98,5 +109,9 @@ learnjs.flashElement = function(element, content) {
 
 learnjs.cloneTemplate = function(name) {
     return $('.templates .'+name).clone();
+}
+
+learnjs.triggerEvent = function(name, args) {
+    $('.view-container>*').trigger(name, args);
 }
 
