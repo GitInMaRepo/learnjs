@@ -1,5 +1,21 @@
 'use strict';
-var learnjs = {};
+
+function googleSignIn(googleUser) {
+    var id_token = googleUser.getAuthResponse().id_token;
+    AWS.config.update({
+        region: 'us-east-1',
+        credentials: new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: learnjs.poolId,
+            Logins: {
+                'accounts.google.com': id_token
+            }
+        })
+    })
+}
+
+var learnjs = {
+    poolId: 'us-east-1:00fa4db0-1be4-4652-a6f5-31844e5a4866'
+};
 
 learnjs.DO_NOT_RELOAD_THE_PAGE = false;
 

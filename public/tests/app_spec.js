@@ -137,5 +137,31 @@ describe('LearnJS', function () {
             learnjs.showView('#problem-2');
             expect($('.nav-container .skip-button').length).toEqual(0);
         });
+
+        it('has a sign-in button', function(){
+            learnjs.showView('#problem-1');
+            expect($('.signinbox').length).toEqual(1);
+        });
+    });
+
+    describe('The googleSignIn callback', function(){
+        beforeEach(function() {
+            var user = jasmine.createSpyObj('user', ['getAuthResponse', 'bar']);
+            user.getAuthResponse.and.returnValue({id_token: 'GOOGLE_ID'});
+            spyOn(AWS, 'CognitoIdentityCredentials');
+            googleSignIn(user);
+        });
+        it('sets the AWS region', function(){
+            expect(AWS.config.region).toEqual('us-east-1');
+        });
+
+        it('sets the pool id and auth token', function(){
+            expect(AWS.CognitoIdentityCredentials).toHaveBeenCalledWith({
+                IdentityPoolId: learnjs.poolId,
+                Logins: {
+                  'accounts.google.com': 'GOOGLE_ID'
+                }
+            });
+        });        
     });
 });

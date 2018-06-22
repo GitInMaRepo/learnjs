@@ -3,6 +3,8 @@
   <head>
     <meta charset='utf-8'>
     <title>Learn JS!</title>
+    <script src='https://apis.google.com/js/platform.js' async defer></script>
+    <meta name='google-signin-client_id' content='370036717519-bvre1a24gkubd6mbukgre8ku2e4hpi24.apps.googleusercontent.com'></meta>
     <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css'>
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css'>
@@ -54,6 +56,11 @@
           <li><a class='text-lg' href=''>LearnJS</a></li>
           <li><a id="start" href="#problem-1">Start</a></li>
         </ul>
+        <div class='four columns signinbox'>
+          <span class='navbar-padding u-pull-right'>
+            <span class='g-signin2' data-onsuccess='googleSignIn'></span>
+          </span>
+        </div>
       </div>
       <div class='view-container container'>
       </div>
