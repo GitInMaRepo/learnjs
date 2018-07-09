@@ -11,11 +11,30 @@ function googleSignIn(googleUser) {
             }
         })
     })
+    function refresh() {
+        return gapi.auth2.getAuthInstance().signIn({
+            prompt: 'login'
+        }).then(function(userUpdate) {
+            var creds = AWS.config.credentials;
+            var newToken = userUpdate.getAuthResponse().id_token;
+            creds.params.Logins['accounts.google.com'] = newToken;
+            return learnjs.awsRefresh();
+        });
+    }
+    learnjs.awsRefresh().then(function(id) {
+        learnjs.identity.resolve({
+            id: id,
+            email: googleUser.getBasicProfile().getEmail(),
+            refresh: refresh
+        });
+    });
 }
 
 var learnjs = {
     poolId: 'us-east-1:00fa4db0-1be4-4652-a6f5-31844e5a4866'
 };
+
+learnjs.identity = new $.Deferred();
 
 learnjs.DO_NOT_RELOAD_THE_PAGE = false;
 
@@ -87,9 +106,18 @@ learnjs.problemView = function(parameter) {
     return learnjs.applyBindings(view, problem);
 }
 
+learnjs.profileView = function() {
+    var view = learnjs.cloneTemplate('profile-view');
+    learnjs.identity.done(function(identity) {
+        view.find('.email').text(identity.email);
+    });
+    return view;
+}
+
 learnjs.showView = function(hash) {
     var routes = {
         '#problem' : learnjs.problemView,
+        '#profileview' : learnjs.profileView,
         '' : learnjs.landingView
     };
 
@@ -129,5 +157,17 @@ learnjs.cloneTemplate = function(name) {
 
 learnjs.triggerEvent = function(name, args) {
     $('.view-container>*').trigger(name, args);
+}
+
+learnjs.awsRefresh = function() {
+    var deferred = new $.Deferred();
+    AWS.config.credentials.refresh(function(err) {
+        if (err) {
+            deferred.reject(err);
+        } else {
+            deferred.resolve(AWS.config.credentials.identityId);
+        }
+    });
+    return deferred.promise();
 }
 
